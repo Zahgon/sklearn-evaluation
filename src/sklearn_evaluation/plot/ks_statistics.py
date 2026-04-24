@@ -25,13 +25,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from ploomber_core.exceptions import modify_exceptions
 from sklearn_evaluation.plot.style import apply_theme
-
 
 def _binary_ks_curve(y_true, y_score):
     """This function generates the points necessary to calculate the KS
@@ -67,88 +65,10 @@ def _binary_ks_curve(y_true, y_score):
     ValueError: If `y_true` is not composed of 2 classes. The KS Statistic
         is only relevant in binary classification.
     """
+    pass
 
-    y_true, y_score = np.asarray(y_true), np.asarray(y_score)
-    lb = LabelEncoder()
-    encoded_labels = lb.fit_transform(y_true)
-    if len(lb.classes_) != 2:
-        raise ValueError(
-            "Cannot calculate KS statistic for data with "
-            "{} category/ies".format(len(lb.classes_))
-        )
-    idx = encoded_labels == 0
-    data1 = np.sort(y_score[idx])
-    data2 = np.sort(y_score[np.logical_not(idx)])
-
-    ctr1, ctr2 = 0, 0
-    thresholds, pct1, pct2 = [], [], []
-    while ctr1 < len(data1) or ctr2 < len(data2):
-        # Check if data1 has no more elements
-        if ctr1 >= len(data1):
-            current = data2[ctr2]
-            while ctr2 < len(data2) and current == data2[ctr2]:
-                ctr2 += 1
-
-        # Check if data2 has no more elements
-        elif ctr2 >= len(data2):
-            current = data1[ctr1]
-            while ctr1 < len(data1) and current == data1[ctr1]:
-                ctr1 += 1
-
-        else:
-            if data1[ctr1] > data2[ctr2]:
-                current = data2[ctr2]
-                while ctr2 < len(data2) and current == data2[ctr2]:
-                    ctr2 += 1
-
-            elif data1[ctr1] < data2[ctr2]:
-                current = data1[ctr1]
-                while ctr1 < len(data1) and current == data1[ctr1]:
-                    ctr1 += 1
-
-            else:
-                current = data2[ctr2]
-                while ctr2 < len(data2) and current == data2[ctr2]:
-                    ctr2 += 1
-                while ctr1 < len(data1) and current == data1[ctr1]:
-                    ctr1 += 1
-
-        thresholds.append(current)
-        pct1.append(ctr1)
-        pct2.append(ctr2)
-
-    thresholds = np.asarray(thresholds)
-    pct1 = np.asarray(pct1) / float(len(data1))
-    pct2 = np.asarray(pct2) / float(len(data2))
-
-    if thresholds[0] != 0:
-        thresholds = np.insert(thresholds, 0, [0.0])
-        pct1 = np.insert(pct1, 0, [0.0])
-        pct2 = np.insert(pct2, 0, [0.0])
-    if thresholds[-1] != 1:
-        thresholds = np.append(thresholds, [1.0])
-        pct1 = np.append(pct1, [1.0])
-        pct2 = np.append(pct2, [1.0])
-
-    differences = pct1 - pct2
-    ks_statistic, max_distance_at = (
-        np.max(differences),
-        thresholds[np.argmax(differences)],
-    )
-
-    return thresholds, pct1, pct2, ks_statistic, max_distance_at, lb.classes_
-
-
-@apply_theme()
 @modify_exceptions
-def ks_statistic(
-    y_true,
-    y_score,
-    figsize=None,
-    title_fontsize="large",
-    text_fontsize="medium",
-    ax=None,
-):
+def ks_statistic(y_true, y_score, figsize=None, title_fontsize='large', text_fontsize='medium', ax=None):
     """Generates the KS Statistic plot from labels and scores/probabilities
 
     Parameters
@@ -193,44 +113,4 @@ def ks_statistic(
     .. versionadded:: 0.8.4
 
     """
-    y_true = np.array(y_true)
-    y_score = np.array(y_score)
-
-    classes = np.unique(y_true)
-    if len(classes) != 2:
-        raise ValueError(
-            "Cannot calculate KS statistic for data with "
-            "{} category/ies".format(len(classes))
-        )
-    probas = y_score
-
-    # Compute KS Statistic curves
-    thresholds, pct1, pct2, ks_statistic, max_distance_at, classes = _binary_ks_curve(
-        y_true, probas[:, 1].ravel()
-    )
-
-    if ax is None:
-        fig, ax = plt.subplots(1, 1, figsize=figsize)
-
-    ax.set_title("KS Statistics Plot", fontsize=title_fontsize)
-
-    ax.plot(thresholds, pct1, label="Class {}".format(classes[0]))
-    ax.plot(thresholds, pct2, label="Class {}".format(classes[1]))
-    idx = np.where(thresholds == max_distance_at)[0][0]
-    ax.axvline(
-        max_distance_at,
-        *sorted([pct1[idx], pct2[idx]]),
-        label="KS Statistic: {:.3f} at {:.3f}".format(ks_statistic, max_distance_at),
-        linestyle=":",
-        color="black"
-    )
-
-    ax.set_xlim([0.0, 1.0])
-    ax.set_ylim([0.0, 1.0])
-
-    ax.set_xlabel("Threshold", fontsize=text_fontsize)
-    ax.set_ylabel("Percentage below threshold", fontsize=text_fontsize)
-    ax.tick_params(labelsize=text_fontsize)
-    ax.legend(loc="lower right", fontsize=text_fontsize)
-
-    return ax
+    pass

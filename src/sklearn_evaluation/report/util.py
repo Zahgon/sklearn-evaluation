@@ -1,13 +1,8 @@
 from jinja2 import Environment, PackageLoader
 import matplotlib.pyplot as plt
 
-
 def jinja_env():
-    env = Environment(
-        loader=PackageLoader("sklearn_evaluation", "assets/report"),
-    )
-    return env
-
+    pass
 
 class Range(object):
     """
@@ -22,27 +17,17 @@ class Range(object):
         """
         Checks if n in range
         """
-        return self.min <= n and self.max >= n
-
+        pass
 
 def run_if_args_are_not_none(func):
     """
     Runs a function only if given args are not none.
     Doesn't raise an error.
     """
-
-    def wrapper(*args, **kw):
-        if not any(elem is None for elem in args):
-            return func(*args, **kw)
-
-    return wrapper
-
+    pass
 
 def gen_ax():
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    return ax
-
+    pass
 
 def check_model(model) -> None:
     """
@@ -54,5 +39,4 @@ def check_model(model) -> None:
 
     # TODO: Should we add ModuleNotSupportedError?
     """
-    if model is None:
-        raise ValueError("Model is none")
+    pass

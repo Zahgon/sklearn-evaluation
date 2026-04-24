@@ -17,30 +17,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils.multiclass import unique_labels, type_of_target
 from ploomber_core.exceptions import modify_exceptions
 from sklearn_evaluation.plot.style import get_color_palette, apply_theme
 
-
 def _validate_target(y):
     """
     Raises a value error if the target is not a classification target.
     """
-    # Ignore None values
-    if y is None:
-        return
+    pass
 
-    y_type = type_of_target(y)
-    if y_type not in ("binary", "multiclass"):
-        raise TypeError(
-            "'{}' target type not supported, only binary and multiclass".format(y_type)
-        )
-
-
-@apply_theme()
 @modify_exceptions
 def target_analysis(y_train, y_test=None, labels=None, colors=None, ax=None):
     """Target analysis plot for visualising class imbalance.
@@ -95,69 +83,4 @@ def target_analysis(y_train, y_test=None, labels=None, colors=None, ax=None):
     .. versionadded:: 0.8.3
 
     """
-
-    _validate_target(y_train)
-    _validate_target(y_test)
-
-    colors = get_color_palette()
-    # Get the unique values from the dataset
-    targets = (y_train,) if y_test is None else (y_train, y_test)
-    classes_ = unique_labels(*targets)
-    if labels is not None:
-        if len(labels) != len(classes_):
-            raise ValueError(
-                (
-                    "Discovered {} classes in the data, does not match "
-                    "the {} labels specified."
-                ).format(len(classes_), len(labels))
-            )
-
-    if ax is None:
-        _, ax = plt.subplots()
-    mode = "balance" if y_test is None else "compare"
-    if mode == "balance":
-        support_ = np.array([(y_train == idx).sum() for idx in classes_])
-        ax.bar(
-            np.arange(len(support_)),
-            support_,
-            color=colors if colors else "#0070FF",
-            align="center",
-            width=0.5,
-        )
-    else:
-        support_ = np.array([[(y == idx).sum() for idx in classes_] for y in targets])
-        bar_width = 0.35
-        legends = ["train", "test"]
-        colors = colors if colors else ["#0070FF", "#FF9B00"]
-        for idx, support in enumerate(support_):
-            index = np.arange(len(classes_))
-            if idx > 0:
-                index = index + bar_width
-
-            ax.bar(index, support, bar_width, color=colors[idx], label=legends[idx])
-
-    ax.set_title("Class Balance for {:,} Instances".format(support_.sum()))
-
-    # Set the x ticks with the class names or labels if specified
-    labels = labels if labels else classes_
-    xticks = np.arange(len(labels))
-    if mode == "compare":
-        xticks = xticks + (0.35 / 2)
-
-    ax.set_xticks(xticks)
-    ax.set_xticklabels(labels)
-
-    # Compute the ceiling for the y limit
-    cmax = support_.max()
-    ax.set_ylim(0, cmax + cmax * 0.1)
-    ax.set_ylabel("support")
-
-    # Remove the vertical grid
-    ax.set_axisbelow(True)
-    ax.yaxis.grid(True)
-    ax.autoscale(enable=True)
-
-    if mode == "compare":
-        ax.legend(frameon=True)
-
-    return ax
+    pass

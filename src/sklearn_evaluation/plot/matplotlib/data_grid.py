@@ -39,34 +39,14 @@ class DataGrid:
 
     def celliter(self):
         # supply data by grouping on the first parameter
-        for i, (name, values) in enumerate(self.rowiter()):
-            for j, value in enumerate(values):
-                yield i, j, value
+        pass
 
     def rowiter(self):
         # supply data by grouping on the first parameter
-        for name, group in self.df.groupby(self.group_by[0]):
-            # if there are only three columns (param1, param2, data),
-            # then ['data'].values will return the values for a fixed param1
-            # in increasing param2 order
-            if len(self.params) == 2:
-                yield name, group["data"].values
-            # if there are more than one params, then we have to do a second
-            # group_by, so the values are grouped together for a fixed
-            # (param1, param2) combination
-            else:
-                values = [
-                    df_sub["data"].values
-                    for _, df_sub in group.groupby(self.group_by[1])
-                ]
-                yield name, values
+        pass
 
     def rownames(self):
-        values = self.df[self.group_by[0]].unique()
-        values.sort()
-        return values
+        pass
 
     def colnames(self):
-        values = self.df[self.group_by[1]].unique()
-        values.sort()
-        return values
+        pass

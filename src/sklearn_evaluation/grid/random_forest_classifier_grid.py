@@ -6,47 +6,8 @@ from sklearn_evaluation.grid.classifier_grid import AbstractClassifierGrid, Grid
 from sklearn.utils.validation import check_consistent_length
 import warnings
 
-
 class RandomForestClassifierGrid(AbstractClassifierGrid):
-    param_grids = dict(
-        {
-            GridTypes.TINY: {
-                "n_estimators": [50, 100, 500],
-                "criterion": ["gini", "entropy"],
-                "min_samples_split": [2, 4],
-                "min_samples_leaf": [1, 2],
-                "max_features": [1.0],
-            },
-            GridTypes.SMALL: {
-                "n_estimators": [50, 100, 150, 500],
-                "criterion": ["gini", "entropy"],
-                "min_samples_split": [2, 4, 8],
-                "min_samples_leaf": [1, 2, 4],
-                "max_features": [1.0, "sqrt", "log2"],
-            },
-            GridTypes.MEDIUM: {
-                "n_estimators": [50, 100, 150, 200, 500],
-                "criterion": ["gini", "entropy"],
-                "min_samples_split": [2, 4, 8, 16],
-                "min_samples_leaf": [1, 2, 4, 8],
-                "max_features": [1.0, "sqrt", "log2"],
-            },
-            GridTypes.LARGE: {
-                "n_estimators": [50, 100, 150, 200, 300, 500],
-                "criterion": ["gini", "entropy", "log_loss"],
-                "min_samples_split": [2, 4, 8, 16, 24],
-                "min_samples_leaf": [1, 2, 4, 8, 16],
-                "max_features": [1.0, "sqrt", "log2"],
-            },
-            GridTypes.X_LARGE: {
-                "n_estimators": [50, 100, 150, 200, 300, 400, 500],
-                "criterion": ["gini", "entropy", "log_loss"],
-                "min_samples_split": [2, 4, 8, 16, 24, 40],
-                "min_samples_leaf": [1, 2, 4, 8, 16, 20],
-                "max_features": [1.0, "sqrt", "log2"],
-            },
-        }
-    )
+    param_grids = dict({GridTypes.TINY: {'n_estimators': [50, 100, 500], 'criterion': ['gini', 'entropy'], 'min_samples_split': [2, 4], 'min_samples_leaf': [1, 2], 'max_features': [1.0]}, GridTypes.SMALL: {'n_estimators': [50, 100, 150, 500], 'criterion': ['gini', 'entropy'], 'min_samples_split': [2, 4, 8], 'min_samples_leaf': [1, 2, 4], 'max_features': [1.0, 'sqrt', 'log2']}, GridTypes.MEDIUM: {'n_estimators': [50, 100, 150, 200, 500], 'criterion': ['gini', 'entropy'], 'min_samples_split': [2, 4, 8, 16], 'min_samples_leaf': [1, 2, 4, 8], 'max_features': [1.0, 'sqrt', 'log2']}, GridTypes.LARGE: {'n_estimators': [50, 100, 150, 200, 300, 500], 'criterion': ['gini', 'entropy', 'log_loss'], 'min_samples_split': [2, 4, 8, 16, 24], 'min_samples_leaf': [1, 2, 4, 8, 16], 'max_features': [1.0, 'sqrt', 'log2']}, GridTypes.X_LARGE: {'n_estimators': [50, 100, 150, 200, 300, 400, 500], 'criterion': ['gini', 'entropy', 'log_loss'], 'min_samples_split': [2, 4, 8, 16, 24, 40], 'min_samples_leaf': [1, 2, 4, 8, 16, 20], 'max_features': [1.0, 'sqrt', 'log2']}})
 
     def __init__(self, grid, cv=3, verbose=0):
         """
@@ -87,12 +48,7 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         super().__init__(grid)
         self.param_grid_ = self.param_grids[self.grid]
         self.estimator_ = RandomForestClassifier()
-        self.grid_search_cv_ = GridSearchCV(
-            estimator=self.estimator_,
-            param_grid=self.param_grid_,
-            cv=cv,
-            verbose=verbose,
-        )
+        self.grid_search_cv_ = GridSearchCV(estimator=self.estimator_, param_grid=self.param_grid_, cv=cv, verbose=verbose)
 
     def fit(self, X, y):
         """
@@ -113,10 +69,7 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         self : object
             Returns the instance itself.
         """
-        self.X = X
-        self.y = y
-        self.grid_search_cv_.fit(X, y, sample_weight=None)
-        return self
+        pass
 
     def set_test_data(self, X_test, y_test) -> None:
         """
@@ -131,10 +84,7 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         y_test : array-like of shape (n_samples,)
             The target variable for supervised learning problems.
         """
-        self._validate_test_data(X_test, y_test)
-
-        self.X_test = X_test
-        self.y_test = y_test
+        pass
 
     def confusion_matrix(self):
         """
@@ -150,10 +100,7 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         .. plot:: ../examples/rf_grid_cm.py
 
         """
-        X_test, y_test = self._prepare_test_data_for_plotting()
-
-        y_pred = self.grid_search_cv_.best_estimator_.predict(X_test)
-        return plot.confusion_matrix(y_test, y_pred)
+        pass
 
     def roc(self):
         """
@@ -168,16 +115,7 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         --------
         .. plot:: ../examples/rf_grid_roc.py
         """
-        X_test, y_test = self._prepare_test_data_for_plotting()
-        y_pred = self.grid_search_cv_.best_estimator_.predict(X_test)
-
-        y_pred = self.grid_search_cv_.predict_proba(X_test)
-
-        if self._is_test_data_given():
-            if not is_array_like_scores(y_pred):
-                y_pred = self.grid_search_cv_.predict_proba(X_test)
-
-        return plot.roc(y_test, y_pred)
+        pass
 
     def feature_importances(self):
         """
@@ -193,10 +131,9 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         .. plot:: ../examples/rf_grid_feature_importances.py
 
         """
-        feature_importances = self.grid_search_cv_.best_estimator_.feature_importances_
-        return plot.feature_importances(feature_importances)
+        pass
 
-    def grid_search_results(self, change="n_estimators", kind="line"):
+    def grid_search_results(self, change='n_estimators', kind='line'):
         """
         Plots grid search results based on `GridSearchCV.best_estimator_`.
 
@@ -214,18 +151,13 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         ax: matplotlib Axes
             Axes containing the plot
         """
-        return plot.grid_search(
-            self.grid_search_cv_.cv_results_, change=change, kind=kind
-        )
+        pass
 
     def _show_no_test_data_provided_warning(self) -> None:
         """
         Warn the user if no test data was provided.
         """
-        warnings.warn(
-            "Notice that no test data was provided, "
-            "and training data is used for these computations"
-        )
+        pass
 
     def _prepare_test_data_for_plotting(self):
         """
@@ -242,34 +174,13 @@ class RandomForestClassifierGrid(AbstractClassifierGrid):
         y_test : array-like of shape (n_samples,)
             The target variable for supervised learning problems.
         """
-        if self._is_test_data_given():
-            X_test = self.X_test
-            y_test = self.y_test
-        else:
-            self._show_no_test_data_provided_warning()
-            X_test = self.X
-            y_test = self.y
-
-        return X_test, y_test
+        pass
 
     def _is_test_data_given(self):
-        return hasattr(self, "X_test") and hasattr(self, "y_test")
+        pass
 
     def _validate_test_data(self, X_test, y_test) -> None:
         """
         Check if given test data is valid.
         """
-        if X_test is None or y_test is None:
-            raise TypeError(
-                "X_test and y_test should be array-like, got: "
-                f"X_test: <class '{X_test.__class__}'>, "
-                f"y_true <class '{y_test.__class__}'>"
-            )
-
-        if len(X_test) == 0 or len(y_test) == 0:
-            raise ValueError(
-                "X_test and y_test should not be empty, got: "
-                f"X_test: {X_test}, y_test: {y_test}"
-            )
-
-        check_consistent_length(X_test, y_test)
+        pass

@@ -1,9 +1,7 @@
 import json
 from pathlib import Path
 import abc
-
 from sklearn_evaluation.report.serialize import figure2html
-
 
 class AbstractPlot(abc.ABC):
     """An abstract class for all class-based plots"""
@@ -67,18 +65,14 @@ class AbstractPlot(abc.ABC):
         ``AbstractComposedPlot`` instance.  This should produce composed plot that
         compares this plot and ``another`` plot.
         """
-        raise NotImplementedError(
-            f"{type(self).__name__!r} doesn't support the add (+) operator"
-        )
+        raise NotImplementedError(f"{type(self).__name__!r} doesn't support the add (+) operator")
 
     def __sub__(self, another):
         """Optional method to support the ``a - b`` operation. must return an
         ``AbstractComposedPlot`` instance. This should produce composed plot that
         compares the difference between this plot and ``another`` plot.
         """
-        raise NotImplementedError(
-            f"{type(self).__name__!r} doesn't support the subtract (-) operator"
-        )
+        raise NotImplementedError(f"{type(self).__name__!r} doesn't support the subtract (-) operator")
 
     @classmethod
     def _from_data(cls):
@@ -87,28 +81,24 @@ class AbstractPlot(abc.ABC):
         ``AbstractPlot.dump``, used for integrating the plot with the experiment
         tracker.
         """
-        raise NotImplementedError(f"{cls.__name__!r} doesn't support _from_data")
+        pass
 
     def dump(self, path):
         """Serialize the plot as ``.json`` to the given path."""
-        data = self._get_data()
-        Path(path).write_text(json.dumps(data), encoding="utf-8")
+        pass
 
     @classmethod
     def from_dump(cls, path):
         """Instantiates a plot object from a path to a JSON file. A default
         implementation is provided, but you might override it.
         """
-        data = json.loads(Path(path).read_text(encoding="utf-8"))
-        del data["version"]
-        del data["class"]
-        return cls(**data).plot()
+        pass
 
     def to_html(self):
-        return figure2html(self.figure_)
-
+        pass
 
 class AbstractComposedPlot(abc.ABC):
+
     @abc.abstractmethod
     def plot(self, ax=None):
         """
@@ -122,15 +112,11 @@ class AbstractComposedPlot(abc.ABC):
         ``AbstractComposedPlot`` instance.  This should produce composed plot that
         compares this plot and ``another`` plot.
         """
-        raise NotImplementedError(
-            f"{type(self).__name__!r} doesn't support the add (+) operator"
-        )
+        raise NotImplementedError(f"{type(self).__name__!r} doesn't support the add (+) operator")
 
     def __sub__(self, another):
         """Optional method to support the ``a - b`` operation. must return an
         ``AbstractComposedPlot`` instance. This should produce composed plot that
         compares the difference between this plot and ``another`` plot.
         """
-        raise NotImplementedError(
-            f"{type(self).__name__!r} doesn't support the substract (-) operator"
-        )
+        raise NotImplementedError(f"{type(self).__name__!r} doesn't support the substract (-) operator")

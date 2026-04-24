@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
-
 from sklearn_evaluation.plot.util import requires_properties
 from sklearn_evaluation.report.serialize import EvaluatorHTMLSerializer
 from sklearn_evaluation.report.report import Report
 from sklearn_evaluation.util import estimator_type, class_name
 from sklearn_evaluation import plot
-
 
 class ClassifierEvaluator(object):
     """
@@ -31,20 +29,9 @@ class ClassifierEvaluator(object):
         Identifier for the model. This can be later used to identify the
         estimator when generating reports.
     """
+    TEMPLATE_NAME = 'classifier.md'
 
-    TEMPLATE_NAME = "classifier.md"
-
-    def __init__(
-        self,
-        estimator=None,
-        y_true=None,
-        y_pred=None,
-        y_score=None,
-        feature_names=None,
-        target_names=None,
-        estimator_name=None,
-        X=None,
-    ):
+    def __init__(self, estimator=None, y_true=None, y_pred=None, y_score=None, feature_names=None, target_names=None, estimator_name=None, X=None):
         self._estimator = estimator
         self._y_true = y_true
         self._y_pred = y_pred
@@ -53,8 +40,6 @@ class ClassifierEvaluator(object):
         self._target_names = target_names
         self._estimator_name = estimator_name
         self._X = X
-        # TODO: perform basic logic checking,
-        # raise Exception if necessary
 
     @property
     def estimator_type(self):
@@ -64,11 +49,11 @@ class ClassifierEvaluator(object):
     @property
     def estimator_class(self):
         """Estimator class (e.g. sklearn.ensemble.RandomForestClassifier)"""
-        return class_name(self.estimator)
+        pass
 
     @property
     def estimator(self):
-        return self._estimator
+        pass
 
     @property
     def X(self):
@@ -76,69 +61,51 @@ class ClassifierEvaluator(object):
 
     @property
     def y_true(self):
-        return self._y_true
+        pass
 
     @property
     def y_pred(self):
-        # get predictions if possible
-        if self._y_pred is None and self.estimator is not None and self.X is not None:
-            self._y_pred = self.estimator.predict(self.X)
-        return self._y_pred
+        pass
 
     @property
     def y_score(self):
-        # get scores if possible
-        if self._y_score is None and self.estimator is not None and self.X is not None:
-            self._y_score = self.estimator.predict_proba(self.X)
-        return self._y_score
+        pass
 
     @property
     def feature_names(self):
-        return self._feature_names
+        pass
 
     @property
     def target_names(self):
-        return self._target_names
+        pass
 
     @property
     def estimator_name(self):
-        return self._estimator_name
+        pass
 
-    @requires_properties(("y_true", "y_pred"))
     def confusion_matrix(self):
         """Confusion matrix plot"""
-        return plot.confusion_matrix(self.y_true, self.y_pred, self.target_names)
+        pass
 
-    @requires_properties(("y_true", "y_score"))
     def roc(self):
         """ROC plot"""
-        return plot.roc(self.y_true, self.y_score, ax=_gen_ax())
+        pass
 
-    @requires_properties(("y_true", "y_score"))
     def precision_recall(self):
         """Precision-recall plot"""
-        return plot.precision_recall(self.y_true, self.y_score, ax=_gen_ax())
+        pass
 
-    @requires_properties(("estimator",))
     def feature_importances(self):
         """Feature importances plot"""
-        return plot.feature_importances(
-            self.estimator, feature_names=self.feature_names, ax=_gen_ax()
-        )
+        pass
 
-    @requires_properties(("estimator",))
     def feature_importances_table(self):
         """Feature importances table"""
-        from . import table
+        pass
 
-        return table.feature_importances(
-            self.estimator, feature_names=self.feature_names
-        )
-
-    @requires_properties(("y_true", "y_score"))
     def precision_at_proportions(self):
         """Precision at proportions plot"""
-        return plot.precision_at_proportions(self.y_true, self.y_score, ax=_gen_ax())
+        pass
 
     def html_serializable(self):
         """
@@ -150,7 +117,7 @@ class ClassifierEvaluator(object):
         element with the image content encoded in base64), useful for
         generating reports using some template system
         """
-        return EvaluatorHTMLSerializer(self)
+        pass
 
     def make_report(self, template=None):
         """
@@ -175,10 +142,7 @@ class ClassifierEvaluator(object):
             Returns the contents of the report if path is None.
 
         """
-        return Report(self.html_serializable(), template)
-
+        pass
 
 def _gen_ax():
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    return ax
+    pass
